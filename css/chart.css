@@ -1,0 +1,19 @@
+.chart-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    box-shadow:var(--shadow);
+
+}
+
+.chart-card canvas{
+
+    width:100% !important;
+
+    height:360px !important;
+
+}
