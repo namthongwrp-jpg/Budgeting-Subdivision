@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Executive Budget Dashboard</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/filter.css">
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/chart.css">
+    <link rel="stylesheet" href="css/table.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= Sidebar ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <img src="assets/logo.png" alt="logo">
+
+            <h2>Budget Dashboard</h2>
+
+            <small>MSDHS</small>
+
+        </div>
+<ul class="menu">
+
+    <li class="menu-item active" data-page="dashboard">
+        📊 Dashboard
+    </li>
+
+    <li class="menu-item" data-page="analysis">
+        📈 วิเคราะห์งบประมาณ
+    </li>
+
+    <li class="menu-item" data-page="agency">
+        🏢 หน่วยงาน
+    </li>
+
+    <li class="menu-item" data-page="province">
+        📍 จังหวัด
+    </li>
+
+    <li class="menu-item" data-page="detail">
+        📄 รายละเอียดข้อมูล
+    </li>
+
+    <li class="menu-item" data-page="export">
+        ⬇ Export
+    </li>
+
+</ul>
+
+    </aside>
+
+    <!-- ================= Content ================= -->
+
+    <main class="content">
+
+<header class="topbar">
+
+    <div>
+
+        <h1>Executive Budget Dashboard</h1>
+
+        <small>สำนักงานปลัดกระทรวงการพัฒนาสังคมและความมั่นคงของมนุษย์</small>
+
+    </div>
+
+    <div id="updateTime"></div>
+
+</header>
+
+<!-- ================= Dashboard ================= -->
+
+<section id="dashboardPage" class="page">
+
+    <section class="filter-panel">
+
+        <select id="yearFilter"></select>
+        <select id="budgetTypeFilter"></select>
+        <select id="categoryFilter"></select>
+        <select id="agencyFilter"></select>
+        <select id="provinceFilter"></select>
+        <select id="requestTypeFilter"></select>
+
+    </section>
+
+    <section class="cards">
+
+        <!-- KPI Cards ทั้งหมดของคุณไว้ตรงนี้ -->
+        <section class="cards">
+
+<div class="card">
+<h4>งบประมาณรวม</h4>
+<h2 id="totalBudget">0 บาท</h2>
+</div>
+
+<div class="card">
+<h4>จำนวนรายการ</h4>
+<h2 id="totalItem">0</h2>
+</div>
+
+<div class="card">
+<h4>หน่วยงาน</h4>
+<h2 id="totalAgency">0</h2>
+</div>
+
+<div class="card">
+<h4>จังหวัด</h4>
+<h2 id="totalProvince">0</h2>
+</div>
+
+<div class="card">
+<h4>ครุภัณฑ์</h4>
+<h2 id="totalEquipment">0</h2>
+</div>
+
+<div class="card">
+<h4>สิ่งก่อสร้าง</h4>
+<h2 id="totalBuilding">0</h2>
+</div>
+
+<div class="card">
+<h4>ทดแทนครุภัณฑ์</h4>
+<h2 id="totalReplace">0</h2>
+</div>
+
+<div class="card">
+<h4>เพิ่มประสิทธิภาพ</h4>
+<h2 id="totalImprove">0</h2>
+</div>
+
+</section>
+
+    </section>
+
+    <section class="chart-grid">
+
+        <!-- Chart ทั้ง 6 canvas -->
+<section class="chart-grid">
+
+<div class="chart-card">
+<canvas id="budgetChart"></canvas>
+</div>
+
+<div class="chart-card">
+<canvas id="budgetTypeChart"></canvas>
+</div>
+
+<div class="chart-card">
+<canvas id="agencyChart"></canvas>
+</div>
+
+<div class="chart-card">
+<canvas id="provinceChart"></canvas>
+</div>
+
+<div class="chart-card">
+<canvas id="categoryChart"></canvas>
+</div>
+
+<div class="chart-card">
+<canvas id="requestChart"></canvas>
+</div>
+
+</section>
+
+    </section>
+
+</section>
+
+<!-- ================= Analysis ================= -->
+
+<section id="analysisPage" class="page" style="display:none;">
+
+    <h2>📈 วิเคราะห์งบประมาณ</h2>
+
+    <div id="analysisContent"></div>
+
+</section>
+
+<!-- ================= Agency ================= -->
+
+<section id="agencyPage" class="page" style="display:none;">
+
+    <h2>🏢 หน่วยงาน</h2>
+
+    <div id="agencyContent"></div>
+
+</section>
+
+<!-- ================= Province ================= -->
+
+<section id="provincePage" class="page" style="display:none;">
+
+    <h2>📍 จังหวัด</h2>
+
+    <div id="provinceContent"></div>
+
+</section>
+
+<!-- ================= Detail ================= -->
+
+<section id="detailPage" class="page" style="display:none;">
+
+    <h2>📄 รายละเอียดข้อมูล</h2>
+
+    <section class="table-card">
+
+        <table id="budgetTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>ปี</th>
+                    <th>ประเภทงบ</th>
+                    <th>หมวด</th>
+                    <th>รายการ</th>
+                    <th>หน่วยงาน</th>
+                    <th>จังหวัด</th>
+                    <th>จำนวน</th>
+                    <th>งบประมาณ</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody></tbody>
+
+        </table>
+
+    </section>
+
+</section>
+
+<!-- ================= Export ================= -->
+
+<section id="exportPage" class="page" style="display:none;">
+
+    <h2>⬇ Export</h2>
+
+    <button onclick="exportExcel()">Export Excel</button>
+
+    <button onclick="exportPDF()">Export PDF</button>
+
+    <button onclick="exportAllCharts()">Export Charts</button>
+
+</section>
+
+</main>
+
+</div>
+
+<!-- JavaScript -->
+
+<script src="js/utils.js"></script>
+<script src="js/state.js"></script>
+<script src="js/api.js"></script>
+<script src="js/filter.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/table.js"></script>
+<script src="js/export.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/agency.js"></script>
+<script src="js/province.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+
+</html>
